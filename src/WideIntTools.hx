@@ -134,10 +134,6 @@ class WideIntTools {
     return int64ToString(value);
   }
   
-  inline static public function asString(value:Int64):String {
-    return int64ToString(value);
-  }
-  
   inline static public function toHex(value:Int64):String {
     return StringTools.hex(value.high, 8) + StringTools.hex(value.low, 8);
   }
@@ -164,4 +160,23 @@ class WideIntTools {
   inline static public function x2wi(value:Expr) {
     return exprToInt64(value);
   } 
+  
+  
+  // as aliases
+  
+  inline static public function asFloat(value:Int64):Float {
+    return int64ToFloat(value);
+  }
+  
+  inline static public function asInt(value:Int64):Int {
+    return int64ToInt(value);
+  }
+  
+  inline static public function asString(value:Int64):String {
+    return int64ToString(value);
+  }
+  
+  inline static public function asHex(value:Int64):String {
+    return toHex(value);
+  }
 }

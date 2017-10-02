@@ -123,8 +123,8 @@ class Test {
     Assert.isTrue(0.x2wi() == smallFloat.f2wi());
     Assert.isTrue(0.x2wi() == -31.0e-12.x2wi());
     
-    Assert.isTrue(2e15 == 2e15.x2wi().wi2f());
-    Assert.isTrue(-2e15 == -2e15.x2wi().wi2f());
+    Assert.isTrue(2e15 == 2e15.x2wi().asFloat());
+    Assert.isTrue(-2e15 == -2e15.x2wi().asFloat());
   }
 }
 
