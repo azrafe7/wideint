@@ -134,6 +134,10 @@ class WideIntTools {
     return int64ToString(value);
   }
   
+  inline static public function asString(value:Int64):String {
+    return int64ToString(value);
+  }
+  
   inline static public function toHex(value:Int64):String {
     return StringTools.hex(value.high, 8) + StringTools.hex(value.low, 8);
   }
