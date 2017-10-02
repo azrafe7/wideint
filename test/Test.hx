@@ -126,5 +126,18 @@ class Test {
     Assert.isTrue(2e15 == 2e15.x2wi().asFloat());
     Assert.isTrue(-2e15 == -2e15.x2wi().asFloat());
   }
-}
+  
+  public function testFromString() {
+    Assert.isTrue(0 == stringToInt64("0"));
+    
+    Assert.isTrue(0 == "0".x2wi());
 
+    Assert.isTrue(12 == "012".s2wi());
+    Assert.isTrue(12 == "012".x2wi());
+    
+    Assert.isTrue("-123456789012345" == "-123456789012345".s2wi().asString());
+    Assert.isTrue("-123456789012345" == "-123456789012345".x2wi().asString());
+  }
+  
+  
+}
