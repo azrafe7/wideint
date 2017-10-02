@@ -44,6 +44,7 @@ class WideIntTools {
   
   // LONG VERSIONS
   
+  /* NOTE: naive conversion Int64 -> String -> Float) */
   @:noUsing
   static public function int64ToFloat(value:Int64):Float {
     if (value < MIN_FLOAT_INT64 || value > MAX_FLOAT_INT64) {
