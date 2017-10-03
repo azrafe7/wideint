@@ -305,4 +305,52 @@ class Test {
     
     Assert.pass();
   }
+  
+  public function testFuzzyFloat() {
+    var N = 55;
+    
+    for (i in 0...N) {
+      var factor = Math.pow(2, Std.random(63));
+      var sign = Math.random() > .5 ? -1 : 1;
+      var float = sign * Math.random() * factor;
+
+      if (float < MIN_INT64_FLOAT || float > MAX_INT64_FLOAT) {
+        try {
+          var i64:Int64 = float.f2wi();
+          Assert.fail("Exception expected for (" + float + "), but not thrown (result was " + i64.asString() + ")!");
+        } catch (err:Dynamic) {
+          Assert.pass();
+        }
+      } else {
+        var i64:Int64 = float.f2wi();
+        var truncFloat = float < 0 ? Math.fceil(float) : Math.ffloor(float);
+        Assert.isTrue(truncFloat == i64.asFloat(), 
+          "Processing " + float + ": expected float(" + truncFloat + ") to be equal to i64(" + i64.asFloat() + "), but was not!");
+      }
+    }
+  }
+  
+  public function testFuzzyRoundedFloat() {
+    var N = 50;
+    
+    for (i in 0...N) {
+      var factor = Math.pow(2, Std.random(63));
+      var sign = Math.random() > .5 ? -1 : 1;
+      var float = sign * Math.random() * factor;
+      var roundedFloat = Math.fround(float);
+
+      if (float < MIN_INT64_FLOAT || float > MAX_INT64_FLOAT) {
+        try {
+          var i64:Int64 = float.rf2wi();
+          Assert.fail("Exception expected for (" + float + "), but not thrown (result was " + i64.asString() + ")!");
+        } catch (err:Dynamic) {
+          Assert.pass();
+        }
+      } else {
+        var i64:Int64 = float.rf2wi();
+        Assert.isTrue(roundedFloat == i64.asFloat(), 
+          "Processing " + float + ": expected float(" + roundedFloat + ") to be equal to i64(" + i64.asFloat() + "), but was not!");
+      }
+    }
+  }
 }
