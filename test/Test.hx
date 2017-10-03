@@ -139,9 +139,13 @@ class Test {
     Assert.isTrue(0 == stringToInt64("0"));
     
     Assert.isTrue(0 == "0".x2wi());
+    Assert.isTrue(0 == "0".s2wi());
+    Assert.isTrue(0 == "-0".s2wi());
+    Assert.isTrue(0 == "-0".x2wi());
 
     Assert.isTrue(12 == "012".s2wi());
     Assert.isTrue(12 == "012".x2wi());
+    Assert.isTrue(-123 == "  -123".x2wi());
     
     Assert.isTrue("-123456789012345" == "-123456789012345".s2wi().asString());
     Assert.isTrue("-123456789012345" == "-123456789012345".x2wi().asString());
@@ -159,6 +163,9 @@ class Test {
   public function testInvalidDecString() {
     var invalidStr = [
       "  ",
+      "1.4",
+      "1e2",
+      " -123 ",
       "-12.1",
       " -12345678901234567890",
       " 12345678901234567890",

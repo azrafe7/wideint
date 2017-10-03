@@ -79,6 +79,14 @@ class WideIntTools {
     return Int64.ofInt(value);
   }
   
+  /**
+   * Converts an hex or decimal string to an Int64 (using regexes). Will throw on failed conversions.
+   * 
+   * NOTE:
+   *  - doesn't support floating point strings or scientific notation (e.g. `1.4` or `1e2` raise an exception)
+   *  - leading spaces are allowed, but trailing chars are not (e.g. `  -123` is ok, while `  -123 str` is not)
+   *  - hex strings cannot start with `-` (e.g. `-0x0` is not allowed), while dec strings can (`-0` is ok)
+   */
   @:noUsing
   static public function stringToInt64(value:String):Int64 {
     if (hexRegex.match(value)) {
