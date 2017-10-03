@@ -14,6 +14,13 @@ class Test {
   
   public function new():Void { }
   
+  @:keep
+  static inline public function debugger() {
+  #if nodejs
+    untyped __js__('debugger');
+  #end
+  }
+  
   static public function main():Void {
     var runner = new Runner();
     runner.addCase(new Test());
@@ -87,6 +94,7 @@ class Test {
     Assert.isTrue(0xFFFFFFFF == 0xFFFFFFFF.i2wi());
     Assert.isTrue(0x7FFFFFFF == 0x7FFFFFFF.i2wi());
     Assert.isTrue(0x80000000 == 0x80000000.i2wi());
+    Assert.isTrue(-1 == -1.i2wi());
     
     var minInt:Int = 0x80000000;
     var fromIntHex:Int64 = minInt.i2wi();
@@ -126,7 +134,7 @@ class Test {
     Assert.isTrue(2e15 == 2e15.x2wi().asFloat());
     Assert.isTrue(-2e15 == -2e15.x2wi().asFloat());
   }
-  
+
   public function testFromString() {
     Assert.isTrue(0 == stringToInt64("0"));
     
@@ -137,7 +145,113 @@ class Test {
     
     Assert.isTrue("-123456789012345" == "-123456789012345".s2wi().asString());
     Assert.isTrue("-123456789012345" == "-123456789012345".x2wi().asString());
+    
+    Assert.isTrue("-123456789012345" == "-123456789012345".s2wi().asString());
+    Assert.isTrue("-123456789012345" == "-123456789012345".x2wi().asString());
+    
+    Assert.isTrue("1234567890123456789" == "   1234567890123456789".s2wi().asString());
+    Assert.isTrue("1234567890123456789" == "   1234567890123456789".x2wi().asString());
+    
+    Assert.isTrue("-1234567890123456789" == "   -1234567890123456789".s2wi().asString());
+    Assert.isTrue("-1234567890123456789" == "   -1234567890123456789".x2wi().asString());
   }
   
+  public function testInvalidDecString() {
+    var invalidStr = [
+      "  ",
+      "-12.1",
+      " -12345678901234567890",
+      " 12345678901234567890",
+      "0345y",
+      "-0x000",
+      "1 c",
+    ];
+
+    for (i in 0...invalidStr.length) {
+      try {
+        var i64:Int64 = invalidStr[i].s2wi();
+        Assert.fail("Exception expected for (" + invalidStr[i] + "), but not thrown (result was " + i64.asString() + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+  }
   
+  public function testFromHex() {
+    var invalidStr = [
+      "  ",
+      "b12",
+      " 1234 d",
+      ".2",
+      " 0xdgh",
+      ",24",
+      "-0x2gh",
+      "-0x0",
+      "-0x1",
+      " 0x aaf",
+      "2x3",
+      "\t0XAsdDet",
+      "      2e3",
+      "0x2gh",
+      "0x0123456701234567a",
+      "0x01234567012345678",
+      "0x0123456701234567 1",
+      "-0x0123456701234567",
+    ];
+
+    for (i in 0...invalidStr.length) {
+      try {
+        var i64:Int64 = invalidStr[i].s2wi();
+        Assert.fail("Exception expected for (" + invalidStr[i] + "), but not thrown (result was " + i64.asString() + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+    
+    var validStr = [
+      { raw: "0xb12", expected: "B12" },
+      { raw: "0x0", expected: "0" },
+      { raw: "  0x0123456701abcdef", expected: "0123456701ABCDEF" },
+    ];
+    
+    for (i in 0...validStr.length) {
+      var i64:Int64 = validStr[i].raw.s2wi();
+      var expected = StringTools.lpad(validStr[i].expected, "0", 16);
+      Assert.isTrue(i64.asHex() == expected);
+    }
+    
+  }
+  
+  public function testConversionOverflow() {
+    var invalidFloats = [
+      Math.pow(2, 53),
+      Math.pow(-2, 53),
+      Math.pow(2, 53) + 1.,
+      Math.pow(-2, 53) - 1.,
+    ];
+
+    for (f in invalidFloats) {
+      try {
+        var i64:Int64 = f.f2wi();
+        Assert.fail("Exception expected for (" + f + "), but not thrown (result was " + i64.asString() + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+    
+    var invalidStr = [
+      "-9223372036854775809",
+      "9223372036854775808",
+      "0x12345678123456780"
+    ];
+
+    for (i in 0...invalidStr.length) {
+      try {
+        var i64:Int64 = invalidStr[i].s2wi();
+        Assert.fail("Exception expected for (" + invalidStr[i] + "), but not thrown (result was " + i64.asString() + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+  }
 }
