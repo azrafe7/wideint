@@ -39,7 +39,8 @@ class WideIntTools {
   static public var MIN_FLOAT_INT64(default, never):Int64 = Int64.parseString(MIN_FLOAT_INT64_STR);
   static public var MAX_FLOAT_INT64(default, never):Int64 = Int64.parseString(MAX_FLOAT_INT64_STR);
   
-  static public var hexRegex(default, never):EReg = ~/\s*0x((?:[0-9a-f]{1,8}){1,2})(.*)/gi;
+  static public var hexRegex(default, never):EReg = ~/^\s*0x((?:[0-9a-f]{1,8}){1,2})(.*)/gi;
+  static public var decRegex(default, never):EReg = ~/^\s*([-]?[0-9]{1,19})(.*)/gi;
   
   
   // LONG VERSIONS
@@ -82,7 +83,7 @@ class WideIntTools {
   static public function stringToInt64(value:String):Int64 {
     if (hexRegex.match(value)) {
       var tail = hexRegex.matched(2);
-      if (tail != "") throw "NumberFormatError: Invalid Int64 hex string (" + value + ")";
+      if (tail != "" || hexRegex.matched(1) == "") throw "NumberFormatError: Invalid Int64 hex string (" + value + ")";
       
       // extract high and low
       var hex = hexRegex.matched(1);
@@ -93,7 +94,14 @@ class WideIntTools {
       var i64 = Int64.make(Std.parseInt("0x" + high), Std.parseInt("0x" + low));
       return i64;
     }
-    return Int64.parseString(value);
+    
+    if (decRegex.match(value)) {
+      var tail = decRegex.matched(2);
+      if (tail != "" || decRegex.matched(1) == "") throw "NumberFormatError: Invalid Int64 dec string (" + value + ")";
+      return Int64.parseString(decRegex.matched(1));
+    }
+    
+    throw "NumberFormatError: Invalid Int64 string (" + value + ")";
   }
   
   @:noUsing
