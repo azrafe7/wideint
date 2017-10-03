@@ -16,7 +16,7 @@ class Test {
   
   @:keep
   static inline public function debugger() {
-  #if nodejs
+  #if (js || nodejs)
     untyped __js__('debugger');
   #end
   }
@@ -253,5 +253,56 @@ class Test {
         Assert.pass();
       }
     }
+  }
+  
+  public function testToFloatOverflow() {
+    var int64values = [
+      "-9007199254740992".x2wi(),
+      "9007199254740992".x2wi(),
+    ];
+    
+    for (i64 in int64values) {
+      try {
+        var float:Float = i64.asFloat();
+        Assert.fail("Exception expected for (" + i64.asString() + "), but not thrown (result was " + float + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+  }
+  
+  public function testToIntOverflow() {
+    var int64values = [
+      "0x100000000".x2wi(),
+      (1. + 0x7fffffff).f2wi(),
+      (-1. + 0x80000000).f2wi(),
+      "-9007199254740992".x2wi(),
+      "9007199254740992".x2wi(),
+    ];
+    
+    for (i64 in int64values) {
+      try {
+        var int:Float = i64.asInt();
+        Assert.fail("Exception expected for (" + i64.asString() + "), but not thrown (result was " + int + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+  }
+  
+  public function testFromExprNoOverhead() {
+    debugger();
+    
+    // inspect the generated code to see if these translate
+    // to single calls to the Int64 constructor
+    // (e.g. `var this1 = new haxe__$Int64__$_$_$Int64(0,0);` etc.)
+    
+    var i0 = "0x0".x2wi();
+    var i1 = "1".x2wi();
+    var i2 = 2.5.x2wi();
+    var i3 = 3.x2wi();
+    var i4 = 0x4.x2wi();
+    
+    Assert.pass();
   }
 }
