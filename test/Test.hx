@@ -262,6 +262,23 @@ class Test {
     }
   }
   
+  public function testFromNaNs() {
+    var floats = [
+      Math.NaN,
+      Math.NEGATIVE_INFINITY,
+      Math.POSITIVE_INFINITY,
+    ];
+    
+    for (f in floats) {
+      try {
+        var i64:Int64 = floatToInt64(f);
+        Assert.fail("Exception expected for (" + f + "), but not thrown (result was " + i64.asString() + ")!");
+      } catch (err:Dynamic) {
+        Assert.pass();
+      }
+    }
+  }
+  
   public function testToFloatOverflow() {
     var int64values = [
       "-9007199254740992".x2wi(),
@@ -357,6 +374,45 @@ class Test {
         var i64:Int64 = float.rf2wi();
         Assert.isTrue(roundedFloat == i64.asFloat(), 
           "Processing " + float + ": expected float(" + roundedFloat + ") to be equal to i64(" + i64.asFloat() + "), but was not!");
+      }
+    }
+  }
+  
+  public function testFuzzyDecStrings() {
+    function stripLeadingZeroes(s:String):String {
+      if (s == "0") return s;
+      var regex = ~/^[0]*(.*)/gi;
+      regex.match(s);
+      return regex.matched(1);
+    }
+    
+    var chars = "0123456789".split("");
+    var N = 50;
+    
+    for (i in 0...N) {
+      var sign = Math.random() > .5 ? "-" : "";
+      var length = 1 + Std.random(25);
+      var randDigits = [for (i in 0...length) chars[Std.random(chars.length)]].join("");
+      randDigits = stripLeadingZeroes(randDigits);
+      var digitsLen = randDigits.length;
+      var str = sign + randDigits;
+      
+      if (digitsLen < 19) { 
+        // less than 19 digits should be ok
+        var i64:Int64 = str.s2wi();
+        if (str == "-0") str = "0";
+        Assert.isTrue(str == i64.asString(), "Expected str(" + str + ") to be equal to int64(" + i64.asString() + "), but was not!");
+      } else if (digitsLen > 19) { 
+        // more than 19 digits should throw an exception
+        try {
+          var i64:Int64 = str.s2wi();
+          Assert.fail("Exception expected for (" + str + "), but not thrown (result was " + i64.asString() + ")!");
+        } catch (err:Dynamic) {
+          Assert.pass();
+        }
+      } else { 
+        // 19 digits are not easy to test as strings, they cross the boundary (see MIN_FLOAT_INT64_STR/MAX_FLOAT_INT64_STR)
+        Assert.pass();
       }
     }
   }
