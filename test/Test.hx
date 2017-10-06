@@ -6,6 +6,7 @@ import utest.Assert;
 import haxe.Int64;
 import haxe.Int64Helper;
 
+import NumLexi;
 import WideIntTools.*;
 using WideIntTools;
 
