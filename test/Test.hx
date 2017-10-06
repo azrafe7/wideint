@@ -380,13 +380,19 @@ class Test {
   
   public function testFuzzyDecStrings() {
     function stripLeadingZeroes(s:String):String {
-      if (s == "0") return s;
-      var regex = ~/^[0]*(.*)/gi;
-      regex.match(s);
-      return regex.matched(1);
+      var regex:EReg = ~/^\s*([-]?)([0-9]+)/g;
+      
+      if (!regex.match(s)) return "";
+      var sign = regex.matched(1);
+      var rest = regex.matched(2);
+      
+      while (rest.length > 1 && rest.charAt(0) == "0") rest = rest.substr(1);
+      if (rest != "0") rest = sign + rest;
+      
+      return rest;
     }
     
-    var chars = "0123456789".split("");
+    var chars = "00123456789".split("");
     var N = 50;
     
     for (i in 0...N) {
