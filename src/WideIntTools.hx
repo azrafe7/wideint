@@ -40,7 +40,7 @@ class WideIntTools {
   static public var MAX_FLOAT_INT64(default, never):Int64 = Int64.parseString(MAX_FLOAT_INT64_STR);
   
   static public var hexRegex(default, never):EReg = ~/^\s*0x((?:[0-9a-f]{1,8}){1,2})(.*)/gi;
-  static public var decRegex(default, never):EReg = ~/^\s*([-]?[0-9]{1,19})(.*)/gi;
+  static public var decRegex(default, never):EReg = ~/^\s*([-]?[0-9]{1,})(.*)/gi;
   
   
   // LONG VERSIONS
