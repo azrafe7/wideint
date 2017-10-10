@@ -8,9 +8,11 @@ import haxe.Int64Helper;
 
 import NumLexi.*;
 import WideIntTools.*;
+
 using WideIntTools;
 
 
+@:keep
 class Tests {
   
   public function new():Void { }
