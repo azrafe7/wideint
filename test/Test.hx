@@ -6,7 +6,7 @@ import utest.Assert;
 import haxe.Int64;
 import haxe.Int64Helper;
 
-import NumLexi;
+import NumLexi.*;
 import WideIntTools.*;
 using WideIntTools;
 
@@ -380,45 +380,40 @@ class Test {
   }
   
   public function testFuzzyDecStrings() {
-    function stripLeadingZeroes(s:String):String {
-      var regex:EReg = ~/^\s*([-]?)([0-9]+)/g;
-      
-      if (!regex.match(s)) return "";
-      var sign = regex.matched(1);
-      var rest = regex.matched(2);
-      
-      while (rest.length > 1 && rest.charAt(0) == "0") rest = rest.substr(1);
-      if (rest != "0") rest = sign + rest;
-      
-      return rest;
-    }
-    
-    var chars = "00123456789".split("");
     var N = 50;
     
     for (i in 0...N) {
-      var sign = Math.random() > .5 ? "-" : "";
-      var length = 1 + Std.random(25);
-      var randDigits = [for (i in 0...length) chars[Std.random(chars.length)]].join("");
-      randDigits = stripLeadingZeroes(randDigits);
-      var digitsLen = randDigits.length;
-      var str = sign + randDigits;
-      
-      if (digitsLen < 19) { 
-        // less than 19 digits should be ok
+      var str = getRandDecString();
+      checkDecString(str);
+    }
+  }
+  
+  
+  static function getRandDecString(minLen:Int = 1, maxLen:Int = 25):String {
+    var chars = "0123456789".split("");
+    var sign = Math.random() > .5 ? "-" : "";
+    var length = minLen + Std.random(maxLen - minLen);
+    var randString = sign + [for (i in 0...length) chars[Std.random(chars.length)]].join("");
+    return randString;
+  }
+  
+  static function checkDecString(str:String) {
+    var inRange = isInInt64Range(str);
+    
+    if (inRange) {
+      try {
         var i64:Int64 = str.s2wi();
-        if (str == "-0") str = "0";
-        Assert.isTrue(str == i64.asString(), "Expected str(" + str + ") to be equal to int64(" + i64.asString() + "), but was not!");
-      } else if (digitsLen > 19) { 
-        // more than 19 digits should throw an exception
-        try {
-          var i64:Int64 = str.s2wi();
-          Assert.fail("Exception expected for (" + str + "), but not thrown (result was " + i64.asString() + ")!");
-        } catch (err:Dynamic) {
-          Assert.pass();
-        }
-      } else { 
-        // 19 digits are not easy to test as strings, they cross the boundary (see MIN_FLOAT_INT64_STR/MAX_FLOAT_INT64_STR)
+        Assert.equals(stripLeadingZeros(str), i64.asString());
+      } catch (err:Dynamic){
+        trace("this should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange);
+        Assert.fail();
+      }
+    } else {
+      try {
+        var i64:Int64 = str.s2wi();
+        trace("this should NOT be valid, but `" + str + "` returned i64:" + i64.asString() + " while isInInt64Range returned " + inRange);
+        Assert.equals(stripLeadingZeros(str), i64.asString());
+      } catch (err:Dynamic){
         Assert.pass();
       }
     }
