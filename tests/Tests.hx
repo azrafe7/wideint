@@ -11,7 +11,7 @@ import WideIntTools.*;
 using WideIntTools;
 
 
-class Test {
+class Tests {
   
   public function new():Void { }
   
@@ -24,7 +24,7 @@ class Test {
   
   static public function main():Void {
     var runner = new Runner();
-    runner.addCase(new Test());
+    runner.addCase(new Tests());
     Report.create(runner);
     runner.run();
   }  
