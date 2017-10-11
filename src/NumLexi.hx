@@ -16,8 +16,9 @@ private typedef Repr = {
  * Utility class to compare arbitrary-long numeric strings.
  * 
  * NOTES:
+ * 
  *  - should work for negative num-strings (but only checks for `-` in 0 position)
- *  - num-string starting with `+` are invalid
+ *  - num-strings starting with anything but `-` or digits are invalid
  */
 class NumLexi {
   
@@ -75,7 +76,7 @@ class NumLexi {
     return (a.complement < b.complement) ? -1 : (a.complement > b.complement) ? 1 : 0;
   }
   
-  static public function numLexiCompare(a:String, b:String):Int {
+  static public function compare(a:String, b:String):Int {
     var len = a.length >= b.length ? a.length : b.length;
     
     var first = createRepr(a, len);
@@ -88,6 +89,6 @@ class NumLexi {
   }
   
   static inline public function isInInt64Range(a:String):Bool {
-    return (numLexiCompare(a, MIN_INT64_STR) >= 0 && numLexiCompare(a, MAX_INT64_STR) <= 0);
+    return (compare(a, MIN_INT64_STR) >= 0 && compare(a, MAX_INT64_STR) <= 0);
   }
 }
