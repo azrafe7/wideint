@@ -317,6 +317,7 @@ class Tests {
     }
   }
   
+  @:analyzer(ignore)
   public function testFromExprNoOverhead() {
     debugger();
     
