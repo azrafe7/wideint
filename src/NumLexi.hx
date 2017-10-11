@@ -11,6 +11,14 @@ private typedef Repr = {
   var complement:String;
 }
 
+
+/** 
+ * Utility class to compare arbitrary-long numeric strings.
+ * 
+ * NOTES:
+ *  - should work for negative num-strings (but only checks for `-` in 0 position)
+ *  - num-string starting with `+` are invalid
+ */
 class NumLexi {
   
   static inline public function isNegativeStr(s:String):Bool {
