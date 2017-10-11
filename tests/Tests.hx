@@ -391,6 +391,30 @@ class Tests {
     }
   }
   
+  public function testFuzzyNaiveNumLexiCmp() {
+    var N = 24;
+    var maxLen = 50;
+    
+    // a is negative, b is positive
+    for (i in 0...N) {
+      var a = getRandDecString(1, maxLen);
+      var b = getRandDecString(1, maxLen);
+      if (!NumLexi.isNegativeStr(a)) a = "-" + a;
+      if (NumLexi.isNegativeStr(b)) b = b.substr(1);
+      Assert.isTrue(NumLexi.compare(a, b) == -1);
+    }
+    
+    // a is positive, b is negative
+    for (i in 0...N) {
+      var a = getRandDecString(1, maxLen);
+      var b = getRandDecString(1, maxLen);
+      if (NumLexi.isNegativeStr(a)) a = a.substr(1);
+      if (!NumLexi.isNegativeStr(b)) b = "-" + b;
+      Assert.isTrue(NumLexi.compare(a, b) == 1);
+    }
+  }
+  
+  
   
   static function getRandDecString(minLen:Int = 1, maxLen:Int = 25):String {
     var chars = "0123456789".split("");
