@@ -1,3 +1,6 @@
+#txt logs
+*.txt
+
 # Build and Release Folders
 bin/
 bin-debug/
