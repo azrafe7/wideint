@@ -6,10 +6,10 @@ import utest.Assert;
 import haxe.Int64;
 import haxe.Int64Helper;
 
-import NumLexi.*;
-import WideIntTools.*;
+import wi.NumLexi;
+import wi.WideIntTools.*;
 
-using WideIntTools;
+using wi.WideIntTools;
 
 
 @:keep
@@ -425,12 +425,12 @@ class Tests {
   }
   
   static function checkDecString(str:String) {
-    var inRange = isInInt64Range(str);
+    var inRange = NumLexi.isInInt64Range(str);
     
     if (inRange) {
       try {
         var i64:Int64 = str.s2wi();
-        Assert.equals(stripLeadingZeros(str), i64.asString());
+        Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
       } catch (err:Dynamic){
         trace("this should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange);
         Assert.fail();
@@ -439,7 +439,7 @@ class Tests {
       try {
         var i64:Int64 = str.s2wi();
         trace("this should NOT be valid, but `" + str + "` returned i64:" + i64.asString() + " while isInInt64Range returned " + inRange);
-        Assert.equals(stripLeadingZeros(str), i64.asString());
+        Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
       } catch (err:Dynamic){
         Assert.pass();
       }

@@ -1,5 +1,6 @@
+package wi;
 
-import WideIntTools.*;
+import wi.WideIntTools.*;
 
 using haxe.Int64Helper;
 using haxe.Int64;

@@ -1,3 +1,5 @@
+package wi;
+
 #if macro
 import haxe.macro.Expr;
 #end
