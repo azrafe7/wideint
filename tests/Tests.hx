@@ -414,6 +414,22 @@ class Tests {
     }
   }
   
+  public function testFuzzyNumLexiCmp() {
+    var N = 50;
+    var maxLen = 25;
+    
+    for (i in 0...N) {
+      var str = getRandDecString(1, maxLen);
+      try {
+        var i64:Int64 = str.s2wi();
+        Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
+        Assert.isTrue(NumLexi.isInInt64Range(str));
+      } catch (err:Dynamic) {
+        Assert.isFalse(NumLexi.isInInt64Range(str));
+      }
+    }
+  }
+  
   
   
   static function getRandDecString(minLen:Int = 1, maxLen:Int = 25):String {
