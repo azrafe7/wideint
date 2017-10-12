@@ -4,7 +4,7 @@
   <output>
     <movie outputType="CustomBuild" />
     <movie input="" />
-    <movie path="test.hxml" />
+    <movie path="tests.hxml" />
     <movie fps="0" />
     <movie width="0" />
     <movie height="0" />
@@ -16,16 +16,16 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="test" />
+    <class path="tests" />
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="" />
+    <option directives="analyzer-optimize&#xA;analyzer-user-var-fusion" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
-    <option mainClass="Test" />
+    <option mainClass="Tests" />
     <option enabledebug="False" />
-    <option additional="" />
+    <option additional="-debug &#xA;-dce full" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

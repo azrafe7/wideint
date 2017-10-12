@@ -29,7 +29,7 @@ class Tests {
     runner.addCase(new Tests());
     Report.create(runner);
     runner.run();
-  }  
+  }
 
   public function testInt64Range() {
     Assert.equals(MAX_INT64_STR, MAX_INT64.asString());
