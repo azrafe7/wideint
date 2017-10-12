@@ -7,12 +7,12 @@ using haxe.Int64;
 
 private typedef Repr = {
   var raw:String;
-  var noZeroes:String;
+  var noZeros:String;
   var complement:String;
 }
 
 
-/** 
+/**
  * Utility class to compare arbitrary-long numeric strings.
  * 
  * NOTES:
@@ -22,6 +22,7 @@ private typedef Repr = {
  *  - num-strings starting with anything but `-` or digits are invalid (i.e. `+123` is not supported)
  */
 class NumLexi {
+  static var leadingZerosRegex(default, never):EReg = ~/^([-])?([0]+)(.*)/g;
   
   static inline public function isNegativeStr(s:String):Bool {
     return s.charAt(0) == '-';
@@ -36,15 +37,14 @@ class NumLexi {
   }
   
   /** 
-   * Removes any non-meaningful leading zeroes from `s` (e.g. "-000123" -> "-123", and "000" -> "0"; BUT "000x" -> "x").
+   * Removes any non-meaningful leading zeros from `s` (e.g. "-000123" -> "-123", and "000" -> "0"; BUT "000x" -> "x").
    * 
    * NOTE: also converts "-0" to "0"
    */
   static public function stripLeadingZeros(s:String):String {
-    var regex:EReg = ~/^([-])?([0]+)(.*)/g;
-    if (regex.match(s)) {
-      var sign = isNullOrEmpty(regex.matched(1)) ? "" : regex.matched(1);
-      var rest = isNullOrEmpty(regex.matched(3)) ? null : regex.matched(3);
+    if (leadingZerosRegex.match(s)) {
+      var sign = isNullOrEmpty(leadingZerosRegex.matched(1)) ? "" : leadingZerosRegex.matched(1);
+      var rest = isNullOrEmpty(leadingZerosRegex.matched(3)) ? null : leadingZerosRegex.matched(3);
       if (rest == null) return "0";
       return sign + rest;
     } else {
@@ -64,7 +64,7 @@ class NumLexi {
     
     var noZeros = stripLeadingZeros(s);
     var isNegative = isNegativeStr(noZeros);
-    var repr:Repr = { raw:s, noZeroes:noZeros, complement:null };
+    var repr:Repr = { raw:s, noZeros:noZeros, complement:null };
     
     if (isNegative) {
       var abs = noZeros.substr(1);
