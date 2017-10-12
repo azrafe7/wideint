@@ -13,14 +13,14 @@ using StringTools;
  *  - `WideInt` and `wi` are _visual_ shortcuts for `Int64`
  *  - same applies for one-letter parts in conversion methods (`s`:String, `f`:Float, `i`:Int, `x`:Expr)
  *  - conversion methods also have more properly named aliases (e.g. wi2s() == int64ToString()), hinted with @:noUsing
- *  - many of the conversion methods will trow an exception in case of (under|over)flow
+ *  - many of the conversion methods will throw an exception in case of (under|over)flow
  * 
  * Notes:
  * 
  *  - floatToInt64() doesn't round the value before conversion, it truncates it (i.e. `floatToInt64(.5) == floatToInt64(-.5) == 0`)
  *    - use roundedFloatToInt64() for that (or the related rf2wi())
  *  - Int64 itself wraps around in case of (under|over)flow (i.e. `MAX_INT64 + 1 == MIN_INT64`)
- *  - dafault behaviour about NaN/NEGATIVE_INFINITY/POSITIVE_INFINITY apply
+ *  - default behaviour about NaN/NEGATIVE_INFINITY/POSITIVE_INFINITY apply
  */
 class WideIntTools {
   
@@ -82,7 +82,8 @@ class WideIntTools {
   /**
    * Converts an hex or decimal string to an Int64 (using regexes). Will throw on failed conversions.
    * 
-   * NOTE:
+   * NOTES:
+   * 
    *  - doesn't support floating point strings or scientific notation (e.g. `1.4` or `1e2` raise an exception)
    *  - leading spaces are allowed, but trailing chars are not (e.g. `  -123` is ok, while `  -123 str` is not)
    *  - hex strings cannot start with `-` (e.g. `-0x0` is not allowed), while dec strings can (`-0` is ok)
