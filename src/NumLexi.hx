@@ -6,8 +6,8 @@ using haxe.Int64;
 
 
 private typedef Repr = {
-  var value:String;
-  var stripped:String;
+  var raw:String;
+  var noZeroes:String;
   var complement:String;
 }
 
@@ -64,7 +64,7 @@ class NumLexi {
     
     var noZeros = stripLeadingZeros(s);
     var isNegative = isNegativeStr(noZeros);
-    var repr:Repr = { value:s, stripped:noZeros, complement:null };
+    var repr:Repr = { raw:s, noZeroes:noZeros, complement:null };
     
     if (isNegative) {
       var abs = noZeros.substr(1);
