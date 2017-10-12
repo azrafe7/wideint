@@ -17,9 +17,9 @@ private typedef Repr = {
  * 
  * NOTES:
  * 
- *  - it's be wise to trim the the num-strings before usage
- *  - should work for negative num-strings (but only checks for `-` in 0 position)
- *  - num-strings starting with anything but `-` or digits are invalid
+ *  - it's wise to trim the num-strings before using these functions
+ *  - works for negative num-strings too (but `-` is only accepted if in 0 position)
+ *  - num-strings starting with anything but `-` or digits are invalid (i.e. `+123` is not supported)
  */
 class NumLexi {
   
