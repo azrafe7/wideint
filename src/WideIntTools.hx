@@ -51,7 +51,7 @@ class WideIntTools {
     if (value < MIN_FLOAT_INT64 || value > MAX_FLOAT_INT64) {
       throw "Error: loss of precision \n  (Int64: " + value + " not in range [" + MIN_FLOAT_INT64_STR + ", " + MAX_FLOAT_INT64_STR + "]";
     }
-    return Std.parseFloat(Std.string(value));
+    return Std.parseFloat(Int64.toStr(value));
   }
   
   @:noUsing
