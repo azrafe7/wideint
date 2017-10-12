@@ -12,10 +12,10 @@ using StringTools;
  * 
  *  - `WideInt` and `wi` are _visual_ shortcuts for `Int64`
  *  - same applies for one-letter parts in conversion methods (`s`:String, `f`:Float, `i`:Int, `x`:Expr)
- *  - conversion methods also have more properly named aliases (e.g. wi2s() == int64ToString()), hinted with @:noUsing
- *  - many of the conversion methods will throw an exception in case of (under|over)flow
+ *  - conversion methods also have more-properly-named aliases (e.g. wi2s() == int64ToString()), annotated with @:noUsing
+ *  - many of the conversion methods will throw an exception in case of (under|over)flow or invalid input
  * 
- * Notes:
+ * NOTES:
  * 
  *  - floatToInt64() doesn't round the value before conversion, it truncates it (i.e. `floatToInt64(.5) == floatToInt64(-.5) == 0`)
  *    - use roundedFloatToInt64() for that (or the related rf2wi())

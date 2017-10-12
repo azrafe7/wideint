@@ -18,7 +18,7 @@ private typedef Repr = {
  * NOTES:
  * 
  *  - it's wise to trim the num-strings before using these functions
- *  - works for negative num-strings too (but `-` is only accepted if in 0 position)
+ *  - works for negative num-strings too (but `-` MUST be in 0th position)
  *  - num-strings starting with anything but `-` or digits are invalid (i.e. `+123` is not supported)
  */
 class NumLexi {
@@ -35,6 +35,11 @@ class NumLexi {
     return s == null || s == "";
   }
   
+  /** 
+   * Removes any non-meaningful leading zeroes from `s` (e.g. "-000123" -> "-123", and "000" -> "0"; BUT "000x" -> "x").
+   * 
+   * NOTE: also converts "-0" to "0"
+   */
   static public function stripLeadingZeros(s:String):String {
     var regex:EReg = ~/^([-])?([0]+)(.*)/g;
     if (regex.match(s)) {
@@ -59,7 +64,8 @@ class NumLexi {
     
     var noZeros = stripLeadingZeros(s);
     var isNegative = isNegativeStr(noZeros);
-    var repr:Repr = { value:s, stripped:noZeros, complement:noZeros };
+    var repr:Repr = { value:s, stripped:noZeros, complement:null };
+    
     if (isNegative) {
       var abs = noZeros.substr(1);
       var padded = leftPad(abs, "0", len);
