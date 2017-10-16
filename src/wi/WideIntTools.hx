@@ -35,16 +35,70 @@ class WideIntTools {
   static public inline var MIN_FLOAT_INT64_STR:String = "-9007199254740991"; // -2^53 + 1
   static public inline var MAX_FLOAT_INT64_STR:String = "9007199254740991";  //  2^53 - 1
   
-  static public var MIN_INT64(default, never):Int64 = Int64.parseString(MIN_INT64_STR);
-  static public var MAX_INT64(default, never):Int64 = Int64.parseString(MAX_INT64_STR);
+  static public var MIN_INT64(default, never):Int64 = parseInt64String(MIN_INT64_STR);
+  static public var MAX_INT64(default, never):Int64 = parseInt64String(MAX_INT64_STR);
   
-  static public var MIN_FLOAT_INT64(default, never):Int64 = Int64.parseString(MIN_FLOAT_INT64_STR);
-  static public var MAX_FLOAT_INT64(default, never):Int64 = Int64.parseString(MAX_FLOAT_INT64_STR);
+  static public var MIN_FLOAT_INT64(default, never):Int64 = parseInt64String(MIN_FLOAT_INT64_STR);
+  static public var MAX_FLOAT_INT64(default, never):Int64 = parseInt64String(MAX_FLOAT_INT64_STR);
   
   static public var hexRegex(default, never):EReg = ~/^\s*0x((?:[0-9a-f]{1,8}){1,2})(.*)/gi;
   static public var decRegex(default, never):EReg = ~/^\s*([-]?[0-9]{1,})(.*)/gi;
   
   static public inline var TWO_32:Float = 4294967296.; // Math.pow(2., 32);
+  
+  
+  /**
+    Create `Int64` from given string.
+    
+    NOTE: copy/pasted from unmerged PR (https://github.com/HaxeFoundation/haxe/pull/6644)
+  **/
+  @:noUsing
+  public static function parseInt64String( sParam : String ) : Int64 {
+    var base = Int64.ofInt(10);
+    var current = Int64.ofInt(0);
+    var multiplier = Int64.ofInt(1);
+    var sIsNegative = false;
+
+    var s = StringTools.trim(sParam);
+    if (s.charAt(0) == "-") {
+      sIsNegative = true;
+      s = s.substring(1, s.length);
+    }
+    var len = s.length;
+    var multiplierOverflow = false;
+
+    for (i in 0...len) {
+      multiplierOverflow = multiplierOverflow || Int64.isNeg(multiplier);
+
+      var digitInt = s.charCodeAt(len - 1 - i) - '0'.code;
+
+      if (digitInt < 0 || digitInt > 9) {
+        throw "NumberFormatError";
+      }
+      
+      if (digitInt != 0 ) {
+        if (multiplierOverflow) {
+          throw "NumberFormatError: Multiplier overflow";
+        }
+        
+        var digit:Int64 = Int64.ofInt(digitInt);
+        if (sIsNegative) {
+          current = Int64.sub(current, Int64.mul(multiplier, digit));
+          if (!Int64.isNeg(current)) {
+            throw "NumberFormatError: Underflow";
+          }
+        } else {
+          current = Int64.add(current, Int64.mul(multiplier, digit));
+          if (Int64.isNeg(current)) {
+            throw "NumberFormatError: Overflow";
+          }
+        }
+      }
+      
+      multiplier = Int64.mul(multiplier, base);
+    }
+    return current;
+  }
   
   
   // LONG VERSIONS
@@ -127,7 +181,7 @@ class WideIntTools {
     if (decRegex.match(value)) {
       var tail = decRegex.matched(2);
       if (tail != "" || decRegex.matched(1) == "") throw "NumberFormatError: Invalid Int64 dec string (" + value + ")";
-      return Int64.parseString(decRegex.matched(1));
+      return parseInt64String(decRegex.matched(1));
     }
     
     throw "NumberFormatError: Invalid Int64 string (" + value + ")";

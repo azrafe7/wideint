@@ -24,11 +24,38 @@ class Tests {
   #end
   }
   
+  // https://github.com/haxetink/tink_testrunner/blob/d762f78/src/tink/testrunner/Reporter.hx#L168-L177
+  inline static public function trace(v:String) {
+  #if travix
+    travix.Logger.println(v);
+  #elseif (air || air3)
+    flash.Lib.trace(v);
+  #elseif (sys || nodejs)
+    Sys.println(v);
+  #else
+    haxe.Log.trace(v);
+  #end
+  }
+  
+  static public function exit(code:Int) {
+  #if travix
+    travix.Logger.exit(code);
+  #elseif sys
+    Sys.exit(code);
+  #else
+    println("exit(" + code + ")`. Not supported on this target.");
+  #end
+  }
+  
+  
   static public function main():Void {
     var runner = new Runner();
     runner.addCase(new Tests());
     Report.create(runner);
     runner.run();
+    
+    // make sure we exit properly, which is necessary on some targets, e.g. flash & (phantom)js
+    exit(0);
   }
 
   public function testInt64Range() {

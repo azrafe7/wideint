@@ -1,0 +1,13 @@
+{
+  "name": "wideint",
+  "license": "MIT",
+  "tags": [],
+  "classPath": "src",
+  "contributors": [
+    "azrafe7"
+  ],
+  "releasenote": "initial release",
+  "version": "0.0.0",
+  "url": "https://github.com/azrafe7/wideint/",
+  "dependencies": {}
+}
