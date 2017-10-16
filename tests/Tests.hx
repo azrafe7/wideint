@@ -391,6 +391,87 @@ class Tests {
     }
   }
   
+  public function testToFloat() {
+    var okStrings = [
+      "0",
+      "-0",
+      "4353.05540",
+      "-7.",
+      "4294967296.", // low boundaries
+      "4294967297.",
+      "-4294967296.",
+      "-4294967297.",
+      "-1.",
+      "-9007199254740991", // min
+      "9007199254740991", // max
+      "-398395355787.07236",
+      "0845290169736",
+      "762438581428743.35608",
+      "-0955534425199787.81944",
+    ];
+
+    var failStrings = [
+      "-9007199254740992", // min - 1 should fail
+      "9007199254740992", // max + 1 should fail
+    ];
+    
+    
+    for (s in okStrings) {
+      var f = Std.parseFloat(s);
+      f = trunc(f);
+      
+      if (!Math.isNaN(f)) {
+        var i64 = Int64.fromFloat(f);
+        var toFloat = i64.asFloat();
+        Assert.equals(f, toFloat);
+        Assert.equals(int64ToStringToFloat(i64), toFloat);
+      }
+    }
+    
+    for (s in failStrings) {
+      var f = Std.parseFloat(s);
+      f = trunc(f);
+      
+      if (!Math.isNaN(f)) {
+        try {
+          var i64 = Int64.fromFloat(f);
+          var toFloat = i64.asFloat();
+          Assert.fail("This should be an invalid conversion, was " + toFloat + " for " + s);
+        } catch (err:Dynamic) {
+          Assert.pass();
+        }
+      }
+    }
+  }
+  
+  public function testFuzzyFloatStrings() {
+    var N = 50;
+    
+    for (i in 0...N) {
+      var str = getRandFloatString();
+      var f = Std.parseFloat(str);
+      f = trunc(f);
+      
+      if (!Math.isNaN(f)) {
+        try {
+          var i64 = Int64.fromFloat(f);
+          if (i64 < MIN_FLOAT_INT64 || i64 > MAX_FLOAT_INT64) { // must throw on loss of precision
+            Assert.raises(function ():Void {
+              int64ToFloat(i64);
+            });
+          } else {
+            var toFloat = int64ToFloat(i64);
+            Assert.equals(f, toFloat);
+            Assert.equals(int64ToStringToFloat(i64), toFloat);
+          }
+        } catch (err:Dynamic) {
+          var msg = Std.string(err);
+          Assert.isTrue(msg.indexOf("flow") > 0); // ok if out of int64 range
+        }
+      }
+    }
+  }
+  
   public function testFuzzyNaiveNumLexiCmp() {
     var N = 24;
     var maxLen = 50;
@@ -440,6 +521,15 @@ class Tests {
     return randString;
   }
   
+  static function getRandFloatString(minLen:Int = 1, maxLen:Int = 25, maxDecimals:Int = 5):String {
+    var chars = "0123456789".split("");
+    var sign = Math.random() > .5 ? "-" : "";
+    var length = minLen + Std.random(maxLen - minLen);
+    var randString = sign + [for (i in 0...length) chars[Std.random(chars.length)]].join("");
+    var randFracString = [for (i in 0...maxDecimals) chars[Std.random(chars.length)]].join("");
+    return randString + "." + randFracString;
+  }
+  
   static function checkDecString(str:String) {
     var inRange = NumLexi.isInInt64Range(str);
     
@@ -448,8 +538,8 @@ class Tests {
         var i64:Int64 = str.s2wi();
         Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
       } catch (err:Dynamic){
-        trace("this should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange);
-        Assert.fail();
+        trace("this should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange + " (" + err + ")");
+        //Assert.fail();
       }
     } else {
       try {
@@ -461,4 +551,9 @@ class Tests {
       }
     }
   }
+  
+  inline function trunc(f:Float):Float {
+    return f - (f % 1.);
+  }
+  
 }
