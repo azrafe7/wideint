@@ -44,16 +44,34 @@ class WideIntTools {
   static public var hexRegex(default, never):EReg = ~/^\s*0x((?:[0-9a-f]{1,8}){1,2})(.*)/gi;
   static public var decRegex(default, never):EReg = ~/^\s*([-]?[0-9]{1,})(.*)/gi;
   
+  static public inline var TWO_32:Float = 4294967296.; // Math.pow(2., 32);
+  
   
   // LONG VERSIONS
   
   /* NOTE: naive conversion Int64 -> String -> Float) */
   @:noUsing
-  static public function int64ToFloat(value:Int64):Float {
+  static public function int64ToStringToFloat(value:Int64):Float {
     if (value < MIN_FLOAT_INT64 || value > MAX_FLOAT_INT64) {
       throw "Error: loss of precision \n  (Int64: " + value + " not in range [" + MIN_FLOAT_INT64_STR + ", " + MAX_FLOAT_INT64_STR + "]";
     }
     return Std.parseFloat(Int64.toStr(value));
+  }
+  
+  /** Direct conversion from Int64 to Float. Will throw if the conversion will result in loss of precision. */
+  @:noUsing
+  static public function int64ToFloat(value:Int64):Float {
+    if (value < MIN_FLOAT_INT64 || value > MAX_FLOAT_INT64) {
+      throw "Error: loss of precision \n  (Int64: " + value + " not in range [" + MIN_FLOAT_INT64_STR + ", " + MAX_FLOAT_INT64_STR + "]";
+    }
+    
+    var lowIsNegative = value.low < 0;
+    
+    var highF:Float = TWO_32 * value.high;
+    var lowF:Float = value.low;
+    if (lowIsNegative) lowF = TWO_32 + lowF; // we need to convert it to its unsigned representation
+    
+    return highF + lowF;
   }
   
   @:noUsing
