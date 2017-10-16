@@ -511,7 +511,30 @@ class Tests {
     }
   }
   
-  
+  /*public function testToFloatSpeed() {
+    var N = 1000;
+    
+    var int64s = [];
+    for (i in 0...N) {
+      var f = MIN_INT64_FLOAT + Math.random() * (MAX_INT64_FLOAT - MIN_INT64_FLOAT);
+      int64s.push(floatToInt64(f));
+    }
+    
+    var t0 = haxe.Timer.stamp();
+    for (i in 0...N) {
+      var f:Float = int64ToFloat(int64s[i]);
+    }
+    var directTime = haxe.Timer.stamp() - t0;
+    
+    t0 = haxe.Timer.stamp();
+    for (i in 0...N) {
+      var f:Float = int64ToStringToFloat(int64s[i]);
+    }
+    var indirectTime = haxe.Timer.stamp() - t0;
+    
+    trace(directTime + " vs " + indirectTime);
+    Assert.isTrue(directTime < indirectTime);
+  }*/
   
   static function getRandDecString(minLen:Int = 1, maxLen:Int = 25):String {
     var chars = "0123456789".split("");
