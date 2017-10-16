@@ -463,7 +463,7 @@ class Tests {
         try {
           var i64 = Int64.fromFloat(f);
           var toFloat = i64.asFloat();
-          Assert.fail("This should be an invalid conversion, was " + toFloat + " for " + s);
+          Assert.fail("This should be an invalid conversion, but was " + toFloat + " for " + s);
         } catch (err:Dynamic) {
           Assert.pass();
         }
@@ -588,13 +588,13 @@ class Tests {
         var i64:Int64 = str.s2wi();
         Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
       } catch (err:Dynamic){
-        trace("this should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange + " (" + err + ")");
-        //Assert.fail();
+        trace("This should be valid, but `" + str + "` threw an exception while isInInt64Range returned " + inRange + " (" + err + ")");
+        Assert.fail();
       }
     } else {
       try {
         var i64:Int64 = str.s2wi();
-        trace("this should NOT be valid, but `" + str + "` returned i64:" + i64.asString() + " while isInInt64Range returned " + inRange);
+        trace("This should NOT be valid, but `" + str + "` returned i64:" + i64.asString() + " while isInInt64Range returned " + inRange);
         Assert.equals(NumLexi.stripLeadingZeros(str), i64.asString());
       } catch (err:Dynamic){
         Assert.pass();
@@ -605,5 +605,4 @@ class Tests {
   inline function trunc(f:Float):Float {
     return f - (f % 1.);
   }
-  
 }
