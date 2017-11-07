@@ -70,7 +70,7 @@ class FakeWideIntTools {
   
   @:noUsing
   inline static public function roundedFloatToInt64(value:Float):Int {
-    return Std.int(Math.fround(value));
+    return Math.round(value);
   }
   
   @:noUsing
