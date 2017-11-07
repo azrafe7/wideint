@@ -14,12 +14,12 @@ private typedef Repr = {
 
 
 /**
- * Utility class to compare arbitrary-long numeric strings.
+ * Utility class to compare arbitrarily-long numeric strings.
  * 
  * NOTES:
  * 
  *  - it's wise to trim the num-strings before using these functions
- *  - works for negative num-strings too (but `-` MUST be in 0th position)
+ *  - works for negative num-strings too, but then the string MUST START with `-` (no spaces)
  *  - num-strings starting with anything but `-` or digits are invalid (i.e. `+123` is not supported)
  */
 class NumLexi {
