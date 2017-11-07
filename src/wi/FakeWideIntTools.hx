@@ -4,13 +4,10 @@ package wi;
 import haxe.macro.Expr;
 #end
 
-import haxe.Int64;
-import haxe.Int64Helper;
-
 using StringTools;
 
 /**
- * This fakes WideIntTools by replacing (almost) all Int64 occurrences with Int ones.
+ * This fakes WideIntTools by replacing all Int64 occurrences with Int ones.
  */
 class FakeWideIntTools {
   
@@ -144,10 +141,6 @@ class FakeWideIntTools {
   }
   
   // to Int64
-  
-  inline static public function fromFloat(value:Float):Int {
-    return floatToInt64(value);
-  }
   
   inline static public function f2wi(value:Float):Int {
     return floatToInt64(value);
