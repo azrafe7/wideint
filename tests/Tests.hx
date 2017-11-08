@@ -48,7 +48,7 @@ class Tests {
   #elseif (phantomjs)
     untyped __js__('phantom').exit
   #else 
-    throw "exit(" + code + ") not supported on this target.";
+    trace("exit() not supported on this target. Return code was " + code + ".");
   #end (code);
   }
   
