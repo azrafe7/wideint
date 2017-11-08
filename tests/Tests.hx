@@ -24,7 +24,7 @@ class Tests {
   #end
   }
   
-  // https://github.com/haxetink/tink_testrunner/blob/d762f78/src/tink/testrunner/Reporter.hx#L168-L177
+  // https://github.com/haxetink/tink_testrunner/blob/f58eb675b021d47cb3a37b841ae5780e1efe0d99/src/tink/testrunner/Reporter.hx#L168
   inline static public function trace(v:String) {
   #if travix
     travix.Logger.println(v);
@@ -37,14 +37,19 @@ class Tests {
   #end
   }
   
+  // https://github.com/haxetink/tink_testrunner/blob/700e5580a1ef8234f4c78f6a886468e928fc8a27/src/tink/testrunner/Runner.hx#L15
   static public function exit(code:Int) {
   #if travix
-    travix.Logger.exit(code);
-  #elseif sys
-    Sys.exit(code);
-  #else
-    println("exit(" + code + ")`. Not supported on this target.");
-  #end
+    travix.Logger.exit
+  #elseif (air || air3)
+    untyped __global__["flash.desktop.NativeApplication"].nativeApplication.exit
+  #elseif (sys || nodejs)
+    Sys.exit
+  #elseif (phantomjs)
+    untyped __js__('phantom').exit
+  #else 
+    throw "exit(" + code + ") not supported on this target.";
+  #end (code);
   }
   
   
